@@ -55,10 +55,11 @@ pub fn main() -> Result<DayTwoResult, io::Error> {
                 let items: Vec<&str> = draw_item.split_whitespace().collect();
 
                 if let Ok(color) = items[1].parse::<Color>() {
+                    let count = items[0].parse::<u32>().unwrap_or_default();
                     match color {
-                        Color::RED => red = max(red, items[0].parse::<u32>().unwrap()),
-                        Color::GREEN => blue = max(blue, items[0].parse::<u32>().unwrap()),
-                        Color::BLUE => green = max(green, items[0].parse::<u32>().unwrap()),
+                        Color::RED => red = max(red, count),
+                        Color::GREEN => blue = max(blue, count),
+                        Color::BLUE => green = max(green, count),
                     }
                 }
             }
