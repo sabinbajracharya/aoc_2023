@@ -74,6 +74,11 @@ pub fn main() -> Result<DayTwoResult, io::Error> {
                         Color::BLUE => green = max(green, count),
                     }
                 }
+
+                // To get error message on fail parsing
+                // if let Err(BallColorParseError::UnknownColor(msg)) = "Purple".parse::<Color>() {
+                //     println!("{}", msg);
+                // }
             }
         }
 
@@ -101,9 +106,9 @@ enum Color {
     BLUE,
 }
 
-
+#[derive(Debug)]
 enum BallColorParseError {
-    UnknownColor,
+    UnknownColor(String),
 }
 
 impl FromStr for Color {
@@ -114,7 +119,10 @@ impl FromStr for Color {
             "red" => Ok(Color::RED),
             "green" => Ok(Color::GREEN),
             "blue" => Ok(Color::BLUE),
-            _ => Err(BallColorParseError::UnknownColor),
+            color => {
+                let error_msg = format!("Unknown Color: {}", color);
+                Err(BallColorParseError::UnknownColor(error_msg))
+            },
         }
     }
 }
