@@ -101,15 +101,20 @@ enum Color {
     BLUE,
 }
 
-impl FromStr for Color {
-    type Err = ();
 
-    fn from_str(s: &str) -> Result<Self, ()> {
+enum BallColorParseError {
+    UnknownColor,
+}
+
+impl FromStr for Color {
+    type Err = BallColorParseError;
+
+    fn from_str(s: &str) -> Result<Self, BallColorParseError> {
         match s.to_lowercase().as_str() {
             "red" => Ok(Color::RED),
             "green" => Ok(Color::GREEN),
             "blue" => Ok(Color::BLUE),
-            _ => Err(()),
+            _ => Err(BallColorParseError::UnknownColor),
         }
     }
 }
