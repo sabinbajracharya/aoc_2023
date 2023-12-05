@@ -21,7 +21,7 @@ fn array_from_string(data: &String) -> Vec<&str> {
 fn get_sum_of_valid_game_id(games: &Vec<Game>) -> u32 {
     games.iter().filter_map(|s| {
         if s.is_valid() {
-            Some(s.id)
+            Some(s.game_id)
         } else {
             None
         }
@@ -29,7 +29,7 @@ fn get_sum_of_valid_game_id(games: &Vec<Game>) -> u32 {
 }
 
 fn get_power_of_set_of_cubes(games: &Vec<Game>) -> u32 {
-    games.iter().map(|x| x.red * x.green * x.blue).sum()
+    games.iter().map(|game| game.get_power()).sum()
 }
 
 pub fn main() -> Result<DayTwoResult, io::Error> {
@@ -40,9 +40,21 @@ pub fn main() -> Result<DayTwoResult, io::Error> {
 
     for line in lines {
         let colon_split: Vec<&str> = line.split(":").collect();
-        let game_id: &str = colon_split[0].split_whitespace().collect::<Vec<&str>>()[1];
 
-        let id = game_id.parse::<u32>().unwrap();
+        let game_id= colon_split[0]
+            .split_whitespace()
+            .collect::<Vec<&str>>()[1]
+            .parse::<u32>()
+            .unwrap_or_default();
+
+        // Alternate way to get the game id
+        let game_id = line.trim_start_matches("Game ")
+            .chars()
+            .take_while(|c| c.is_digit(10))
+            .collect::<String>()
+            .parse::<u32>()
+            .unwrap_or_default();
+
         let mut red = 0;
         let mut green = 0;
         let mut blue = 0;
@@ -66,7 +78,7 @@ pub fn main() -> Result<DayTwoResult, io::Error> {
         }
 
         let game = Game {
-            id,
+            game_id,
             red,
             green,
             blue,
@@ -110,7 +122,7 @@ pub struct DayTwoResult {
 
 #[derive(Debug)]
 struct Game {
-    id: u32,
+    game_id: u32,
     red: u32,
     green: u32,
     blue: u32,
@@ -123,7 +135,7 @@ impl Game {
 
     fn new() -> Self {
         Game {
-            id: 0,
+            game_id: 0,
             red: 0,
             green: 0,
             blue: 0,
@@ -132,6 +144,10 @@ impl Game {
 
     fn is_valid(&self) -> bool {
         return self.red <= Game::RED && self.green <= Game::GREEN && self.blue <= Game::BLUE;
+    }
+
+    fn get_power(&self) -> u32 {
+        return self.red * self.green * self.blue
     }
 }
 
